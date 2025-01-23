@@ -22,6 +22,7 @@ There is a github action workflow setup to build to images.  It requires the fol
 | Name | Default | Description |
 | ---- | ------- | ----------- |
 | REGISTRY_NAME | docker.io | The docker registry |
+| OPNFORM_VERSION | latest | The tag to use for which version or OpnForm to build |
 
 ### Secrets
 | Name | Default | Description |
