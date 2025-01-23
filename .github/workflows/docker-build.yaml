@@ -9,6 +9,9 @@ on:
     branches:
       - main
 
+  # schedule:
+  #   - cron: '0 0 * * *' # Runs every day
+    
 env:
   REGISTRY_NAME: ${{ vars.REGISTRY_NAME || 'docker.io' }} # Defaults to docker.io
   REGISTRY_ORG: ${{ vars.REGISTRY_ORG || github.actor }} # Defaults to jhumanj
@@ -25,6 +28,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Check for updates in remote repository
+        id: check-updates
+        run: |
+          git clone --depth 1 https://github.com/JhumanJ/OpnForm.git /tmp/remote-repo
+          cd /tmp/remote-repo
+          REMOTE_LATEST_COMMIT=$(git rev-parse HEAD)
+          cd -
+          LOCAL_LATEST_COMMIT=$(git rev-parse HEAD)
+          if [ "$REMOTE_LATEST_COMMIT" != "$LOCAL_LATEST_COMMIT" ]; then
+            echo "Remote repository has updates."
+            echo "::set-output name=updates::true"
+          else
+            echo "No updates in remote repository."
+            echo "::set-output name=updates::false"
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
