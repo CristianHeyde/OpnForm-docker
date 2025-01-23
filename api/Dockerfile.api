@@ -59,5 +59,7 @@ RUN chmod a+x /usr/local/bin/*
 
 ENV SELF_HOSTED=true
 
+EXPOSE 9000
+
 ENTRYPOINT ["/usr/local/bin/opnform-entrypoint"]
 CMD ["php-fpm"]
