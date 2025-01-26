@@ -21,6 +21,8 @@ env:
   IMAGE_PUSH_MODE: ${{ vars.IMAGE_BUILD_MODE != 'load' }}
   IMAGE_LOAD_MODE: ${{ vars.IMAGE_BUILD_MODE == 'load' }}
 
+  CUSTOM_CERTIFICATE: ${{ vars.CUSTOM_CERTIFICATE || '' }} # Defaults to empty
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,6 +45,16 @@ jobs:
           else
             echo "No updates in remote repository."
             echo "::set-output name=updates::false"
+          fi
+
+      - name: Copy custom certificate
+        if: ${{ env.CUSTOM_CERTIFICATE }}
+        continue-on-error: true
+        run: |
+          if [ -f /certs/${{ env.CUSTOM_CERTIFICATE }} ]; then
+            mkdir -p /etc/ssl/certs
+            cp /certs/${{ env.CUSTOM_CERTIFICATE }} /etc/ssl/certs/${{ env.CUSTOM_CERTIFICATE }}
+            update-ca-certificates
           fi
 
       - name: Set up Docker Buildx
