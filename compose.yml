@@ -58,7 +58,13 @@ services:
     - .env.web
     ports:
       - 8222:80
+    networks:
+      - dokploy-network
 
 volumes:
   postgres-data:
   opnform_storage:
+
+networks:
+  dokploy-network:
+    external: true
